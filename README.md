@@ -16,7 +16,7 @@
 在需要重装的旧系统 SSH 终端中，直接运行以下命令：
 
 ```bash
-bash <(curl -sL [https://raw.githubusercontent.com/kzhx666/vps-tools/main/dd.sh](https://raw.githubusercontent.com/kzhx666/vps-tools/main/dd.sh))
+bash <(curl -sL https://raw.githubusercontent.com/kzhx666/vps-tools/main/dd.sh)
 ```
 
 **功能说明：**
@@ -34,7 +34,7 @@ bash <(curl -sL [https://raw.githubusercontent.com/kzhx666/vps-tools/main/dd.sh]
 使用新密码成功连接到崭新的 Debian 12 系统后，运行以下命令进行基础基建：
 
 ```bash
-bash <(curl -sL [https://raw.githubusercontent.com/kzhx666/vps-tools/main/init.sh](https://raw.githubusercontent.com/kzhx666/vps-tools/main/init.sh))
+bash <(curl -sL https://raw.githubusercontent.com/kzhx666/vps-tools/main/init.sh)
 ```
 
 **功能说明：**
