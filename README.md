@@ -1,0 +1,50 @@
+# VPS 自动化部署工具箱 (vps-tools)
+
+这是一个自用的 VPS 自动化初始化与重装工具箱。主要用于快速将各类云服务器重装为纯净的 Debian 12 系统，并进行基础的安全和网络环境优化。
+
+## 📦 包含脚本
+
+1. **`dd.sh`**：交互式 Debian 12 系统重装脚本（底层调用 `leitbogioro` 的 InstallNET 脚本）。
+2. **`init.sh`**：纯净系统基础环境一键初始化脚本（更新源、安装必备组件、开启 BBR 加速等）。
+
+---
+
+## 🚀 使用方法
+
+### 第一阶段：重装纯净系统 (DD)
+
+在需要重装的旧系统 SSH 终端中，直接运行以下命令：
+
+```bash
+bash <(curl -sL [https://raw.githubusercontent.com/kzhx666/vps-tools/main/dd.sh](https://raw.githubusercontent.com/kzhx666/vps-tools/main/dd.sh))
+```
+
+**功能说明：**
+- 运行后会弹出交互提示，可自定义 Root 密码。
+- 可自定义 SSH 端口（直接回车则默认使用 `22` 端口）。
+- 自动将系统时区设置为 `Asia/Shanghai`（北京时间）。
+- **⚠️ 警告：执行此操作将彻底清空当前服务器硬盘上的所有数据，且不可逆转！**
+
+等待 15-20 分钟后，使用你在脚本中设置的新端口和新密码，重新连接服务器。
+
+---
+
+### 第二阶段：新系统初始化配置
+
+使用新密码成功连接到崭新的 Debian 12 系统后，运行以下命令进行基础基建：
+
+```bash
+bash <(curl -sL [https://raw.githubusercontent.com/kzhx666/vps-tools/main/init.sh](https://raw.githubusercontent.com/kzhx666/vps-tools/main/init.sh))
+```
+
+**功能说明：**
+- 全自动更新系统软件包索引及升级系统 (`apt update && apt upgrade -y`)。
+- 一键安装运维必备小工具 (`curl`, `wget`, `sudo`, `vim`, `git`, `htop`, `tar`, `net-tools`)。
+- 自动修改内核参数，开启 `BBR + fq` 网络加速。
+
+---
+
+## 💡 注意事项
+
+- 如果你在 `dd.sh` 步骤中自定义了高端口号，请务必在服务器重启前，前往云服务商控制台的**安全组/防火墙**中放行该端口，否则重装后将无法连接 SSH！
+- 脚本执行过程中请保持网络畅通，若遇到基础环境缺失问题，建议先修复系统环境变量后再执行。
