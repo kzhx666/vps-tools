@@ -9,8 +9,8 @@ echo ""
 # 1. 交互选择操作系统
 echo "▶ 请选择您要重装的操作系统："
 echo "--- 🌟 Debian 系列 ---"
-echo "  [1] Debian (最新稳定版，默认首选)"
-echo "  [2] Debian 12"
+echo "  [1] Debian 12 (默认，稳定首选)"
+echo "  [2] Debian (最新稳定版)"
 echo "  [3] Debian 11"
 echo "--- 🌟 Ubuntu 系列 ---"
 echo "  [4] Ubuntu (最新 LTS 版)"
@@ -32,7 +32,7 @@ read -p "👉 请输入对应数字 (直接回车默认选 1): " OS_CHOICE
 
 # 根据选择匹配底层脚本的系统参数
 case "$OS_CHOICE" in
-    2) OS_FLAG="-debian 12" ; OS_NAME="Debian 12" ;;
+    2) OS_FLAG="-debian" ; OS_NAME="Debian (最新稳定版)" ;;
     3) OS_FLAG="-debian 11" ; OS_NAME="Debian 11" ;;
     4) OS_FLAG="-ubuntu" ; OS_NAME="Ubuntu (最新 LTS 版)" ;;
     5) OS_FLAG="-ubuntu 24.04" ; OS_NAME="Ubuntu 24.04" ;;
@@ -45,23 +45,23 @@ case "$OS_CHOICE" in
     12) OS_FLAG="-kali" ; OS_NAME="Kali Linux" ;;
     13) OS_FLAG="-windows 10" ; OS_NAME="Windows 10" ;;
     14) OS_FLAG="-windows 2022" ; OS_NAME="Windows Server 2022" ;;
-    1|"") OS_FLAG="-debian" ; OS_NAME="Debian (最新稳定版)" ;;
-    *) echo "⚠️ 输入无效，将默认使用 Debian 最新版" ; OS_FLAG="-debian" ; OS_NAME="Debian (最新稳定版)" ;;
+    1|"") OS_FLAG="-debian 12" ; OS_NAME="Debian 12" ;;
+    *) echo "⚠️ 输入无效，将默认使用 Debian 12" ; OS_FLAG="-debian 12" ; OS_NAME="Debian 12" ;;
 esac
 echo "✅ 已选择系统: $OS_NAME"
 echo ""
 
-# 2. 交互输入密码 (Windows 会默认使用 Administrator 账户)
+# 2. 交互输入密码
 read -p "👉 请输入您要设置的密码 (务必牢记): " ROOT_PWD
 if [ -z "$ROOT_PWD" ]; then
     echo "❌ 错误：密码不能为空！已退出。"
     exit 1
 fi
 
-# 3. 交互输入端口 (Windows 远程桌面默认 3389，不适用此端口设置)
+# 3. 交互输入端口
 if [[ "$OS_CHOICE" == "13" || "$OS_CHOICE" == "14" ]]; then
     SSH_PORT=3389
-    echo "💡 检测到选择 Windows，将使用默认 RDP 端口: 3389 (请确保安全组放行)"
+    echo "💡 检测到选择 Windows，将使用默认 RDP 端口: 3389"
 else
     read -p "👉 请输入 SSH 端口 (直接回车则默认使用 22): " SSH_PORT
     if [ -z "$SSH_PORT" ]; then
@@ -85,10 +85,6 @@ else
 fi
 echo "▶ 登录密码: $ROOT_PWD"
 echo "=========================================================="
-echo "⚠️ 警告：重装将清空硬盘所有数据，且不可逆！"
-if [ "$SSH_PORT" != "22" ] && [ "$SSH_PORT" != "3389" ]; then
-    echo "⚠️ 提醒：请确保已在云面板安全组中放行了 $SSH_PORT 端口！"
-fi
 read -p "确认无误并开始执行重装吗？(y/n): " CONFIRM
 
 if [[ "$CONFIRM" != "y" && "$CONFIRM" != "Y" ]]; then
@@ -98,10 +94,9 @@ fi
 
 # 5. 正式开始执行
 echo ""
-echo "🚀 开始获取并执行底层 DD 脚本，请耐心等待..."
+echo "🚀 开始获取并执行底层 DD 脚本..."
 wget --no-check-certificate -qO InstallNET.sh 'https://raw.githubusercontent.com/leitbogioro/Tools/master/Linux_reinstall/InstallNET.sh'
 
-# Windows 和 Linux 的底层命令有一点区别，这里做了判定
 if [[ "$OS_CHOICE" == "13" || "$OS_CHOICE" == "14" ]]; then
     bash InstallNET.sh $OS_FLAG -pwd "$ROOT_PWD" -timezone 'Asia/Shanghai'
 else
